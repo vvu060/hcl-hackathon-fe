@@ -28,6 +28,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Plus, Edit, X, Calendar, Clock } from 'lucide-react';
+import { useErrorHandler, ValidationError } from '../hooks/useErrorHandler';
 
 interface ShiftType {
   id: string;
@@ -161,6 +162,8 @@ const calculateWorkingHours = (checkIn: string, checkOut: string) => {
 };
 
 export const User: React.FC = () => {
+  const { handleError, handleAsyncError } = useErrorHandler();
+
   const [attendanceRecords, setAttendanceRecords] = useState<
     AttendanceRecord[]
   >([
@@ -266,96 +269,129 @@ export const User: React.FC = () => {
   const todayShift = userShifts.find((shift) => shift.date === today);
 
   const handleAttendance = () => {
-    const currentTime = getCurrentTime();
-    const newRecord: AttendanceRecord = {
-      id: (attendanceRecords.length + 1).toString(),
-      date: today,
-      checkIn:
-        attendanceAction === 'checkin'
-          ? currentTime
-          : todayAttendance?.checkIn || null,
-      checkOut: attendanceAction === 'checkout' ? currentTime : null,
-      status: 'Present',
-      workingHours: 0,
-    };
+    try {
+      const currentTime = getCurrentTime();
+      const newRecord: AttendanceRecord = {
+        id: (attendanceRecords.length + 1).toString(),
+        date: today,
+        checkIn:
+          attendanceAction === 'checkin'
+            ? currentTime
+            : todayAttendance?.checkIn || null,
+        checkOut: attendanceAction === 'checkout' ? currentTime : null,
+        status: 'Present',
+        workingHours: 0,
+      };
 
-    if (attendanceAction === 'checkout' && todayAttendance?.checkIn) {
-      newRecord.workingHours = calculateWorkingHours(
-        todayAttendance.checkIn,
-        currentTime
-      );
+      if (attendanceAction === 'checkout' && todayAttendance?.checkIn) {
+        newRecord.workingHours = calculateWorkingHours(
+          todayAttendance.checkIn,
+          currentTime
+        );
+      }
+
+      if (todayAttendance) {
+        // Update existing record
+        setAttendanceRecords((prev) =>
+          prev.map((record) =>
+            record.date === today
+              ? {
+                  ...record,
+                  checkOut:
+                    attendanceAction === 'checkout'
+                      ? currentTime
+                      : record.checkOut,
+                  workingHours:
+                    attendanceAction === 'checkout' && record.checkIn
+                      ? calculateWorkingHours(record.checkIn, currentTime)
+                      : record.workingHours,
+                }
+              : record
+          )
+        );
+      } else if (attendanceAction === 'checkin') {
+        // Create new record
+        setAttendanceRecords((prev) => [...prev, newRecord]);
+      }
+
+      setIsAttendanceModalOpen(false);
+    } catch (error) {
+      handleError(error, 'handleAttendance', {
+        showToast: true,
+        logToConsole: true,
+      });
     }
-
-    if (todayAttendance) {
-      // Update existing record
-      setAttendanceRecords((prev) =>
-        prev.map((record) =>
-          record.date === today
-            ? {
-                ...record,
-                checkOut:
-                  attendanceAction === 'checkout'
-                    ? currentTime
-                    : record.checkOut,
-                workingHours:
-                  attendanceAction === 'checkout' && record.checkIn
-                    ? calculateWorkingHours(record.checkIn, currentTime)
-                    : record.workingHours,
-              }
-            : record
-        )
-      );
-    } else if (attendanceAction === 'checkin') {
-      // Create new record
-      setAttendanceRecords((prev) => [...prev, newRecord]);
-    }
-
-    setIsAttendanceModalOpen(false);
   };
 
   // Leave management functions
   const handleLeaveSubmit = () => {
-    if (
-      !leaveFormData.startDate ||
-      !leaveFormData.endDate ||
-      !leaveFormData.reason.trim()
-    ) {
-      return;
-    }
+    try {
+      if (
+        !leaveFormData.startDate ||
+        !leaveFormData.endDate ||
+        !leaveFormData.reason.trim()
+      ) {
+        throw new ValidationError('Please fill in all required fields');
+      }
 
-    if (editingLeave) {
-      // Update existing leave request
-      setLeaveRequests((prev) =>
-        prev.map((leave) =>
-          leave.id === editingLeave.id
-            ? {
-                ...leave,
-                ...leaveFormData,
-                status: 'Pending' as const, // Reset status when editing
-              }
-            : leave
-        )
-      );
-    } else {
-      // Create new leave request
-      const newLeave: LeaveRequest = {
-        id: (leaveRequests.length + 1).toString(),
-        ...leaveFormData,
-        status: 'Pending',
-        appliedDate: today,
-      };
-      setLeaveRequests((prev) => [...prev, newLeave]);
-    }
+      // Validate dates
+      const startDate = new Date(leaveFormData.startDate);
+      const endDate = new Date(leaveFormData.endDate);
+      const today = new Date();
 
-    // Reset form and close modal
-    setLeaveFormData({
-      startDate: '',
-      endDate: '',
-      type: 'Vacation',
-      reason: '',
-    });
-    setEditingLeave(null);
-    setIsLeaveModalOpen(false);
+      if (startDate < today) {
+        throw new ValidationError(
+          'Start date cannot be in the past',
+          'startDate'
+        );
+      }
+
+      if (endDate < startDate) {
+        throw new ValidationError(
+          'End date cannot be before start date',
+          'endDate'
+        );
+      }
+
+      if (editingLeave) {
+        // Update existing leave request
+        setLeaveRequests((prev) =>
+          prev.map((leave) =>
+            leave.id === editingLeave.id
+              ? {
+                  ...leave,
+                  ...leaveFormData,
+                  status: 'Pending' as const, // Reset status when editing
+                }
+              : leave
+          )
+        );
+      } else {
+        // Create new leave request
+        const newLeave: LeaveRequest = {
+          id: (leaveRequests.length + 1).toString(),
+          ...leaveFormData,
+          status: 'Pending',
+          appliedDate: today.toISOString().split('T')[0],
+        };
+        setLeaveRequests((prev) => [...prev, newLeave]);
+      }
+
+      // Reset form and close modal
+      setLeaveFormData({
+        startDate: '',
+        endDate: '',
+        type: 'Vacation',
+        reason: '',
+      });
+      setEditingLeave(null);
+      setIsLeaveModalOpen(false);
+    } catch (error) {
+      handleError(error, 'handleLeaveSubmit', {
+        showToast: true,
+        logToConsole: true,
+      });
+    }
   };
 
   const handleEditLeave = (leave: LeaveRequest) => {
