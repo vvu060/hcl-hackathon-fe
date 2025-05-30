@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import logo from '../assets/logo.png';
 
 import {
   Sidebar,
@@ -86,8 +87,12 @@ export function AppSidebar() {
       <Sidebar collapsible='icon'>
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel className='text-2xl font-semibold mb-2'>
-              Shiftly
+            <SidebarGroupLabel className='flex items-center mb-2 px-0 group-data-[collapsible=icon]:justify-center'>
+              <img
+                src={logo}
+                alt='Shiftly Logo'
+                className='h-10 w-20 object-cover  group-data-[collapsible=icon]:h-6'
+              />
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
