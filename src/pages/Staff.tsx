@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -34,6 +34,12 @@ import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
+import { Edit, Trash2, Users, UserCheck, UserX, Building } from 'lucide-react';
+import {
+  PageHeaderSkeleton,
+  TableSkeleton,
+  StatCardSkeleton,
+} from '../components/ui/skeleton';
 
 interface StaffMember {
   id: string;
@@ -135,6 +141,7 @@ const getStatusVariant = (status: string) => {
 };
 
 export const Staff: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [staffData, setStaffData] = useState<StaffMember[]>(staffMembers);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
@@ -148,6 +155,15 @@ export const Staff: React.FC = () => {
     email: '',
     phone: '',
   });
+
+  // Simulate loading data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1800); // Simulate 1.8 second loading time
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Filter staff based on search term and department
   const filteredStaff = staffData.filter((staff) => {
@@ -163,6 +179,18 @@ export const Staff: React.FC = () => {
 
     return matchesSearch && matchesDepartment;
   });
+
+  // Calculate statistics based on filtered data
+  const totalStaff = filteredStaff.length;
+  const activeStaff = filteredStaff.filter(
+    (staff) => staff.status === 'Active'
+  ).length;
+  const onLeaveStaff = filteredStaff.filter(
+    (staff) => staff.status === 'On Leave'
+  ).length;
+  const uniqueDepartments = new Set(
+    filteredStaff.map((staff) => staff.department)
+  ).size;
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -252,6 +280,33 @@ export const Staff: React.FC = () => {
     });
     setIsModalOpen(true);
   };
+
+  if (isLoading) {
+    return (
+      <div className='p-6'>
+        <PageHeaderSkeleton />
+
+        <div className='mb-6 flex justify-between items-center'>
+          <div className='flex gap-4'>
+            <div className='h-10 w-64 bg-gray-200 rounded animate-pulse'></div>
+            <div className='h-10 w-48 bg-gray-200 rounded animate-pulse'></div>
+          </div>
+          <div className='h-10 w-32 bg-gray-200 rounded animate-pulse'></div>
+        </div>
+
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+        </div>
+
+        <div className='bg-white rounded-lg border'>
+          <TableSkeleton rows={5} columns={6} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='p-6'>
@@ -415,7 +470,7 @@ export const Staff: React.FC = () => {
                   Cancel
                 </Button>
                 <Button type='submit'>
-                  {editingStaff ? 'Update Staff Member' : 'Add Staff Member'}
+                  {editingStaff ? 'Update Staff' : 'Add Staff'}
                 </Button>
               </DialogFooter>
             </form>
@@ -423,65 +478,137 @@ export const Staff: React.FC = () => {
         </Dialog>
       </div>
 
+      {/* Statistics Cards */}
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+        <Card>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>
+              Total Staff
+              {(searchTerm || selectedDepartment !== 'all') && ' (Filtered)'}
+            </CardTitle>
+            <Users className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent>
+            <div className='text-2xl font-bold'>{totalStaff}</div>
+            <p className='text-xs text-muted-foreground'>
+              {searchTerm || selectedDepartment !== 'all'
+                ? `Showing filtered results`
+                : `Total staff members`}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Active Staff</CardTitle>
+            <UserCheck className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent>
+            <div className='text-2xl font-bold'>{activeStaff}</div>
+            <p className='text-xs text-muted-foreground'>Currently working</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>On Leave</CardTitle>
+            <UserX className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent>
+            <div className='text-2xl font-bold'>{onLeaveStaff}</div>
+            <p className='text-xs text-muted-foreground'>Staff on leave</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Departments</CardTitle>
+            <Building className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent>
+            <div className='text-2xl font-bold'>{uniqueDepartments}</div>
+            <p className='text-xs text-muted-foreground'>
+              {searchTerm || selectedDepartment !== 'all'
+                ? `In filtered results`
+                : `Total departments`}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Staff Table */}
       <Card>
-        <CardContent className='p-0'>
+        <CardHeader>
+          <CardTitle>Staff Members</CardTitle>
+          <CardDescription>
+            {searchTerm || selectedDepartment !== 'all'
+              ? `Showing ${filteredStaff.length} filtered staff members`
+              : `Manage your healthcare staff and their information`}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Staff Member</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Department</TableHead>
-                <TableHead>Contact</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Contact</TableHead>
+                <TableHead className='text-right'>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredStaff.map((member) => (
-                <TableRow key={member.id}>
-                  <TableCell>
-                    <div className='flex items-center gap-3'>
+              {filteredStaff.map((staff) => (
+                <TableRow key={staff.id}>
+                  <TableCell className='font-medium'>
+                    <div className='flex items-center gap-2'>
                       <img
-                        src={member.avatar}
-                        alt={member.name}
-                        className='h-10 w-10 rounded-full'
+                        src={staff.avatar}
+                        alt={staff.name}
+                        className='h-8 w-8 rounded-full'
                       />
-                      <div>
-                        <div className='font-medium'>{member.name}</div>
-                        <div className='text-sm text-gray-500'>
-                          {member.email}
-                        </div>
-                      </div>
+                      <span>{staff.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className='text-gray-600'>{member.role}</TableCell>
-                  <TableCell className='text-gray-600'>
-                    {member.department}
-                  </TableCell>
-                  <TableCell className='text-gray-600'>
-                    {member.phone}
-                  </TableCell>
+                  <TableCell>{staff.role}</TableCell>
+                  <TableCell>{staff.department}</TableCell>
                   <TableCell>
-                    <Badge variant={getStatusVariant(member.status)}>
-                      {member.status}
+                    <Badge
+                      variant={
+                        getStatusVariant(staff.status) as
+                          | 'default'
+                          | 'secondary'
+                          | 'destructive'
+                          | 'outline'
+                          | 'success'
+                          | 'warning'
+                      }
+                    >
+                      {staff.status}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className='flex gap-2'>
+                    <div className='text-sm'>
+                      <div>{staff.email}</div>
+                      <div className='text-gray-500'>{staff.phone}</div>
+                    </div>
+                  </TableCell>
+                  <TableCell className='text-right'>
+                    <div className='flex justify-end gap-2'>
                       <Button
-                        variant='ghost'
+                        variant='outline'
                         size='sm'
-                        onClick={() => handleEdit(member)}
+                        onClick={() => handleEdit(staff)}
                       >
-                        Edit
+                        <Edit className='h-4 w-4' />
                       </Button>
                       <Button
-                        variant='ghost'
+                        variant='outline'
                         size='sm'
-                        className='text-red-600 hover:text-red-800'
-                        onClick={() => handleDelete(member.id)}
+                        onClick={() => handleDelete(staff.id)}
                       >
-                        Delete
+                        <Trash2 className='h-4 w-4' />
                       </Button>
                     </div>
                   </TableCell>
@@ -491,54 +618,6 @@ export const Staff: React.FC = () => {
           </Table>
         </CardContent>
       </Card>
-
-      <div className='mt-8 grid grid-cols-1 md:grid-cols-3 gap-6'>
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Staff</CardTitle>
-            <CardDescription>
-              {searchTerm || selectedDepartment !== 'all'
-                ? 'Filtered results'
-                : 'Total number of staff members'}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className='text-3xl font-bold text-blue-600'>
-              {filteredStaff.length}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Active</CardTitle>
-            <CardDescription>
-              {searchTerm || selectedDepartment !== 'all'
-                ? 'Active in filtered results'
-                : 'Currently active staff members'}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className='text-3xl font-bold text-green-600'>
-              {filteredStaff.filter((s) => s.status === 'Active').length}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>On Leave</CardTitle>
-            <CardDescription>
-              {searchTerm || selectedDepartment !== 'all'
-                ? 'On leave in filtered results'
-                : 'Staff members currently on leave'}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className='text-3xl font-bold text-yellow-600'>
-              {filteredStaff.filter((s) => s.status === 'On Leave').length}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 };

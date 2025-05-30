@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { TableSkeleton, PageHeaderSkeleton } from './ui/skeleton';
 
 interface ShiftType {
   id: string;
@@ -204,6 +205,41 @@ const StaffTable: React.FC<{ data: StaffMember[] }> = ({ data }) => {
 };
 
 export const Dashboard: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate loading data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500); // Simulate 1.5 second loading time
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className='p-6'>
+        <PageHeaderSkeleton />
+
+        <div className='space-y-8'>
+          <section>
+            <div className='mb-4'>
+              <div className='h-6 w-[200px] bg-gray-200 rounded animate-pulse'></div>
+            </div>
+            <TableSkeleton rows={3} columns={4} />
+          </section>
+
+          <section>
+            <div className='mb-4'>
+              <div className='h-6 w-[180px] bg-gray-200 rounded animate-pulse'></div>
+            </div>
+            <TableSkeleton rows={3} columns={4} />
+          </section>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='p-6'>
       <div className='mb-8'>

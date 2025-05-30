@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -26,6 +26,12 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
+import {
+  PageHeaderSkeleton,
+  TableSkeleton,
+  StatCardSkeleton,
+  CardSkeleton,
+} from '../components/ui/skeleton';
 
 interface Shift {
   id: string;
@@ -282,6 +288,7 @@ const availableStaff: StaffMember[] = [
 ];
 
 export const Schedule: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [shifts, setShifts] = useState<Shift[]>(initialShifts);
   const [shiftRequests] = useState<ShiftRequest[]>(initialShiftRequests);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -295,6 +302,15 @@ export const Schedule: React.FC = () => {
     shiftType: '',
     role: '',
   });
+
+  // Simulate loading data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Simulate 2 second loading time
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Filter staff based on search term
   const filteredStaff = availableStaff.filter(
@@ -425,6 +441,26 @@ export const Schedule: React.FC = () => {
   const approvedRequests = shiftRequests.filter(
     (req) => req.status === 'approved'
   );
+
+  if (isLoading) {
+    return (
+      <div className='p-6'>
+        <PageHeaderSkeleton />
+
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+        </div>
+
+        <div className='mt-8'>
+          <CardSkeleton>
+            <TableSkeleton rows={5} columns={5} />
+          </CardSkeleton>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='p-6'>

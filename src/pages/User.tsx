@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -27,8 +27,14 @@ import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
-import { Plus, Edit, X, Calendar, Clock } from 'lucide-react';
+import { Plus, Edit, X, Calendar, Clock, User as UserIcon } from 'lucide-react';
 import { useErrorHandler, ValidationError } from '../hooks/useErrorHandler';
+import {
+  PageHeaderSkeleton,
+  StatCardSkeleton,
+  CardSkeleton,
+  TableSkeleton,
+} from '../components/ui/skeleton';
 
 interface ShiftType {
   id: string;
@@ -163,6 +169,7 @@ const calculateWorkingHours = (checkIn: string, checkOut: string) => {
 
 export const User: React.FC = () => {
   const { handleError, handleAsyncError } = useErrorHandler();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [attendanceRecords, setAttendanceRecords] = useState<
     AttendanceRecord[]
@@ -261,6 +268,15 @@ export const User: React.FC = () => {
     type: 'Vacation' as LeaveRequest['type'],
     reason: '',
   });
+
+  // Simulate loading data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2200); // Simulate 2.2 second loading time
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const today = new Date().toISOString().split('T')[0];
   const todayAttendance = attendanceRecords.find(
@@ -456,6 +472,37 @@ export const User: React.FC = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className='p-6'>
+        <PageHeaderSkeleton />
+
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6'>
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+        </div>
+
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6'>
+          <CardSkeleton>
+            <TableSkeleton rows={3} columns={2} />
+          </CardSkeleton>
+          <CardSkeleton>
+            <TableSkeleton rows={3} columns={2} />
+          </CardSkeleton>
+        </div>
+
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+          <CardSkeleton>
+            <TableSkeleton rows={4} columns={3} />
+          </CardSkeleton>
+          <CardSkeleton>
+            <TableSkeleton rows={4} columns={3} />
+          </CardSkeleton>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='p-6'>
