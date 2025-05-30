@@ -8,30 +8,7 @@ This project was developed as part of the HCL Hackathon, showcasing modern web d
 
 ## 📸 Screenshots
 
-### Dashboard Overview
-
-![Dashboard Screenshot](./public/screenshots/dashboard.png)
-_Main dashboard showing real-time staff overview and today's schedule_
-
-### Staff Management
-
-![Staff Management Screenshot](./screenshots/staff-management.png)
-_Comprehensive staff directory with detailed profiles and management tools_
-
-### Schedule Management
-
-![Schedule Management Screenshot](./screenshots/schedule-management.png)
-_Interactive schedule management with shift configuration_
-
-### Mobile Interface
-
-![Mobile Interface Screenshot](./screenshots/mobile-interface.png)
-_Responsive mobile-first design across all devices_
-
-### Login Interface
-
-![Login Screenshot](./screenshots/login.png)
-_Secure authentication with role-based access control_
+Application screenshots are available in the `public/screenshots/` folder, showcasing the dashboard, staff management, schedule interface, mobile responsiveness, and authentication flow.
 
 ## 🚀 Features
 
@@ -42,9 +19,6 @@ _Secure authentication with role-based access control_
 - **Protected routes** ensuring proper access control
 - **Social login integration** (Google, GitHub)
 
-![Authentication Flow](./screenshots/auth-flow.png)
-_Authentication and authorization workflow_
-
 ### 📊 Dashboard & Analytics
 
 - **Real-time staff overview** with current shift status
@@ -52,19 +26,13 @@ _Authentication and authorization workflow_
 - **Upcoming shifts** for better planning
 - **Interactive data visualization**
 
-![Dashboard Analytics](./screenshots/dashboard-analytics.png)
-_Real-time analytics and staff overview_
-
-### �� Staff Management
+### 👥 Staff Management
 
 - **Complete staff directory** with detailed profiles
 - **Add, edit, and delete** staff members
 - **Department and role management**
 - **Status tracking** (Active, Inactive, On Leave)
 - **Contact information management**
-
-![Staff Directory](./screenshots/staff-directory.png)
-_Complete staff directory with search and filter capabilities_
 
 ### 📅 Schedule Management
 
@@ -73,18 +41,12 @@ _Complete staff directory with search and filter capabilities_
 - **Shift conflict detection**
 - **Schedule optimization**
 
-![Schedule Interface](./screenshots/schedule-interface.png)
-_Interactive schedule management with conflict detection_
-
 ### 📈 Reports & Analytics
 
 - **Staff utilization reports**
 - **Department-wise analytics**
 - **Shift pattern analysis**
 - **Export functionality**
-
-![Reports Dashboard](./screenshots/reports-dashboard.png)
-_Comprehensive reports and analytics dashboard_
 
 ### ⚙️ Settings & Configuration
 
@@ -93,18 +55,12 @@ _Comprehensive reports and analytics dashboard_
 - **Department configuration**
 - **Shift type customization**
 
-![Settings Panel](./screenshots/settings-panel.png)
-_System configuration and user preferences_
-
 ### 📱 Mobile-First Design
 
 - **Responsive design** that works on all devices
 - **Touch-friendly interface**
 - **Optimized mobile navigation**
 - **Progressive Web App capabilities**
-
-![Mobile Responsive](./screenshots/mobile-responsive.png)
-_Mobile-first responsive design across different screen sizes_
 
 ## 🛠️ Technology Stack
 
@@ -212,26 +168,17 @@ src/
 - **Reports access** - View analytics and generate reports
 - **System settings** - Configure departments, roles, and shifts
 
-![Admin Interface](./screenshots/admin-interface.png)
-_Admin dashboard with full management capabilities_
-
 ### User Features
 
 - **Personal dashboard** - View assigned shifts and schedule
 - **Profile management** - Update personal information
 - **Schedule viewing** - See upcoming shifts and colleagues
 
-![User Interface](./screenshots/user-interface.png)
-_User dashboard with personal schedule and profile management_
-
 ### Responsive Design
 
 - **Mobile-first approach** - Optimized for mobile devices
 - **Tablet support** - Enhanced experience on tablets
 - **Desktop optimization** - Full-featured desktop interface
-
-![Responsive Design](./screenshots/responsive-design.png)
-_Application interface across desktop, tablet, and mobile devices_
 
 ## 🔧 Available Scripts
 
@@ -318,4 +265,4 @@ For questions or support regarding this hackathon project, please reach out to t
 
 ---
 
-**Built with ❤️ for the HCL Hackathon**
+**Built with ❤️ Love for the HCL Hackathon**
