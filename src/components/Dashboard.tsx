@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TableSkeleton, PageHeaderSkeleton } from './ui/skeleton';
+import { useAuth } from '../contexts/AuthContext';
+import { User } from '../pages/User';
 
 interface ShiftType {
   id: string;
@@ -204,7 +206,8 @@ const StaffTable: React.FC<{ data: StaffMember[] }> = ({ data }) => {
   );
 };
 
-export const Dashboard: React.FC = () => {
+// Admin Dashboard Component
+const AdminDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Simulate loading data
@@ -243,7 +246,7 @@ export const Dashboard: React.FC = () => {
   return (
     <div className='p-6'>
       <div className='mb-8'>
-        <h1 className='text-2xl font-bold'>Dashboard</h1>
+        <h1 className='text-2xl font-bold'>Admin Dashboard</h1>
         <p className='text-gray-600'>Overview of your staff and shifts</p>
       </div>
 
@@ -258,6 +261,29 @@ export const Dashboard: React.FC = () => {
           <StaffTable data={upcomingShifts} />
         </section>
       </div>
+    </div>
+  );
+};
+
+// Main Dashboard Component with Role-Based Rendering
+export const Dashboard: React.FC = () => {
+  const { isAdmin, user } = useAuth();
+
+  // If user is admin, show full dashboard
+  if (isAdmin) {
+    return <AdminDashboard />;
+  }
+
+  // If user is regular user, show user profile page
+  return (
+    <div>
+      <div className='p-6 border-b bg-gray-50'>
+        <h1 className='text-2xl font-bold'>Welcome, {user?.name}!</h1>
+        <p className='text-gray-600'>
+          Manage your profile and view your information
+        </p>
+      </div>
+      <User />
     </div>
   );
 };
