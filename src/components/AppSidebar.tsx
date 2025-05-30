@@ -104,7 +104,7 @@ export function AppSidebar() {
       <Sidebar>
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel className='flex items-center mb-2 group-data-[collapsible=icon]:justify-center'>
+            <SidebarGroupLabel className='flex cursor-pointer items-center mb-2 group-data-[collapsible=icon]:justify-center'>
               <img
                 src={logo}
                 alt='Shiftly Logo'
