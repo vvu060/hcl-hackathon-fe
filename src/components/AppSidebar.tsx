@@ -83,7 +83,7 @@ export function AppSidebar() {
 
   return (
     <>
-      <Sidebar>
+      <Sidebar collapsible='icon'>
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel className='text-2xl font-semibold mb-2'>
