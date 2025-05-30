@@ -163,14 +163,18 @@ export function AppSidebar() {
               access your account.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className='gap-2'>
-            <Button variant='outline' onClick={cancelLogout}>
+          <DialogFooter className='flex-col sm:flex-row gap-2'>
+            <Button
+              variant='outline'
+              onClick={cancelLogout}
+              className='w-full sm:w-auto'
+            >
               Cancel
             </Button>
             <Button
               variant='destructive'
               onClick={confirmLogout}
-              className='flex items-center gap-2'
+              className='flex items-center gap-2 w-full sm:w-auto'
             >
               <LogOut className='h-4 w-4' />
               Logout

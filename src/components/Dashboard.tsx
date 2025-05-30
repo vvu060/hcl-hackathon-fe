@@ -147,62 +147,128 @@ const upcomingShifts: StaffMember[] = [
   },
 ];
 
+// Mobile Card Component for Staff Members
+const StaffCard: React.FC<{ member: StaffMember }> = ({ member }) => {
+  const shiftDetails = getShiftDetails(member.shiftType);
+
+  return (
+    <div className='bg-white border rounded-lg p-4 space-y-3'>
+      <div className='flex items-center gap-3'>
+        <img
+          src={member.avatar}
+          alt={member.name}
+          className='h-10 w-10 rounded-full flex-shrink-0'
+        />
+        <div className='flex-1 min-w-0'>
+          <h3 className='font-medium text-gray-900 truncate'>{member.name}</h3>
+          <p className='text-sm text-gray-500 truncate'>{member.role}</p>
+        </div>
+        <span
+          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            member.status === 'Active'
+              ? 'bg-green-100 text-green-800'
+              : 'bg-gray-100 text-gray-800'
+          }`}
+        >
+          {member.status}
+        </span>
+      </div>
+
+      {shiftDetails && (
+        <div className='bg-gray-50 rounded-md p-3'>
+          <div className='flex justify-between items-center'>
+            <span className='font-medium text-sm'>{shiftDetails.name}</span>
+            <span className='text-sm text-gray-600'>
+              {formatTime(shiftDetails.startTime)} -{' '}
+              {formatTime(shiftDetails.endTime)}
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const StaffTable: React.FC<{ data: StaffMember[] }> = ({ data }) => {
   return (
-    <div className='rounded-lg border'>
-      <table className='w-full'>
-        <thead>
-          <tr className='border-b bg-gray-50'>
-            <th className='px-4 py-2 text-left'>Staff Member</th>
-            <th className='px-4 py-2 text-left'>Role</th>
-            <th className='px-4 py-2 text-left'>Shift</th>
-            <th className='px-4 py-2 text-left'>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((member) => {
-            const shiftDetails = getShiftDetails(member.shiftType);
-            return (
-              <tr key={member.id} className='border-b last:border-0'>
-                <td className='px-4 py-2'>
-                  <div className='flex items-center gap-2'>
-                    <img
-                      src={member.avatar}
-                      alt={member.name}
-                      className='h-8 w-8 rounded-full'
-                    />
-                    <span>{member.name}</span>
-                  </div>
-                </td>
-                <td className='px-4 py-2 text-gray-600'>{member.role}</td>
-                <td className='px-4 py-2'>
-                  <div>
-                    <div className='font-medium'>{shiftDetails?.name}</div>
-                    <div className='text-sm text-gray-500'>
-                      {shiftDetails &&
-                        `${formatTime(shiftDetails.startTime)} - ${formatTime(
-                          shiftDetails.endTime
-                        )}`}
-                    </div>
-                  </div>
-                </td>
-                <td className='px-4 py-2'>
-                  <span
-                    className={`inline-block rounded-full px-2 py-1 text-sm ${
-                      member.status === 'Active'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {member.status}
-                  </span>
-                </td>
+    <>
+      {/* Desktop Table View */}
+      <div className='hidden md:block rounded-lg border overflow-hidden'>
+        <div className='overflow-x-auto'>
+          <table className='w-full'>
+            <thead>
+              <tr className='border-b bg-gray-50'>
+                <th className='px-4 py-3 text-left text-sm font-medium text-gray-900'>
+                  Staff Member
+                </th>
+                <th className='px-4 py-3 text-left text-sm font-medium text-gray-900'>
+                  Role
+                </th>
+                <th className='px-4 py-3 text-left text-sm font-medium text-gray-900'>
+                  Shift
+                </th>
+                <th className='px-4 py-3 text-left text-sm font-medium text-gray-900'>
+                  Status
+                </th>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+            </thead>
+            <tbody className='divide-y divide-gray-200'>
+              {data.map((member) => {
+                const shiftDetails = getShiftDetails(member.shiftType);
+                return (
+                  <tr key={member.id} className='hover:bg-gray-50'>
+                    <td className='px-4 py-3'>
+                      <div className='flex items-center gap-3'>
+                        <img
+                          src={member.avatar}
+                          alt={member.name}
+                          className='h-8 w-8 rounded-full flex-shrink-0'
+                        />
+                        <span className='font-medium text-gray-900'>
+                          {member.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className='px-4 py-3 text-gray-600'>{member.role}</td>
+                    <td className='px-4 py-3'>
+                      <div>
+                        <div className='font-medium text-gray-900'>
+                          {shiftDetails?.name}
+                        </div>
+                        <div className='text-sm text-gray-500'>
+                          {shiftDetails &&
+                            `${formatTime(
+                              shiftDetails.startTime
+                            )} - ${formatTime(shiftDetails.endTime)}`}
+                        </div>
+                      </div>
+                    </td>
+                    <td className='px-4 py-3'>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          member.status === 'Active'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        {member.status}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className='md:hidden space-y-3'>
+        {data.map((member) => (
+          <StaffCard key={member.id} member={member} />
+        ))}
+      </div>
+    </>
   );
 };
 
@@ -221,10 +287,10 @@ const AdminDashboard: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className='p-6'>
+      <div className='p-4 sm:p-6'>
         <PageHeaderSkeleton />
 
-        <div className='space-y-8'>
+        <div className='space-y-6 sm:space-y-8'>
           <section>
             <div className='mb-4'>
               <div className='h-6 w-[200px] bg-gray-200 rounded animate-pulse'></div>
@@ -244,20 +310,26 @@ const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className='p-6'>
-      <div className='mb-8'>
-        <h1 className='text-2xl font-bold'>Admin Dashboard</h1>
-        <p className='text-gray-600'>Overview of your staff and shifts</p>
+    <div className='p-4 sm:p-6'>
+      <div className='mb-6 sm:mb-8'>
+        <h1 className='text-2xl sm:text-3xl font-bold text-gray-900'>
+          Admin Dashboard
+        </h1>
+        <p className='text-gray-600 mt-1'>Overview of your staff and shifts</p>
       </div>
 
-      <div className='space-y-8'>
+      <div className='space-y-6 sm:space-y-8'>
         <section>
-          <h2 className='mb-4 text-xl font-semibold'>Today's Schedule</h2>
+          <h2 className='mb-4 text-lg sm:text-xl font-semibold text-gray-900'>
+            Today's Schedule
+          </h2>
           <StaffTable data={todaySchedule} />
         </section>
 
         <section>
-          <h2 className='mb-4 text-xl font-semibold'>Upcoming Shifts</h2>
+          <h2 className='mb-4 text-lg sm:text-xl font-semibold text-gray-900'>
+            Upcoming Shifts
+          </h2>
           <StaffTable data={upcomingShifts} />
         </section>
       </div>
@@ -277,9 +349,11 @@ export const Dashboard: React.FC = () => {
   // If user is regular user, show user profile page
   return (
     <div>
-      <div className='p-6 border-b bg-gray-50'>
-        <h1 className='text-2xl font-bold'>Welcome, {user?.name}!</h1>
-        <p className='text-gray-600'>
+      <div className='p-4 sm:p-6 border-b bg-gray-50'>
+        <h1 className='text-xl sm:text-2xl font-bold text-gray-900'>
+          Welcome, {user?.name}!
+        </h1>
+        <p className='text-gray-600 mt-1'>
           Manage your profile and view your information
         </p>
       </div>

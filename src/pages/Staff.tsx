@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// Enhanced Staff Management with Mobile-First Design
 import {
   Table,
   TableBody,
@@ -34,12 +35,32 @@ import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
-import { Edit, Trash2, Users, UserCheck, UserX, Building } from 'lucide-react';
+import {
+  Edit,
+  Trash2,
+  Users,
+  UserCheck,
+  UserX,
+  Building,
+  Plus,
+  Search,
+  Filter,
+  Mail,
+  Phone,
+  MoreVertical,
+} from 'lucide-react';
 import {
   PageHeaderSkeleton,
   TableSkeleton,
   StatCardSkeleton,
+  CardSkeleton,
 } from '../components/ui/skeleton';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
 
 interface StaffMember {
   id: string;
@@ -103,6 +124,36 @@ const staffMembers: StaffMember[] = [
     email: 'sophia.evans@hospital.com',
     phone: '+1 (555) 567-8901',
   },
+  {
+    id: '6',
+    name: 'Dr. Michael Chen',
+    role: 'Neurologist',
+    department: 'Neurology',
+    status: 'Active',
+    avatar: 'https://avatar.iran.liara.run/public/6',
+    email: 'michael.chen@hospital.com',
+    phone: '+1 (555) 678-9012',
+  },
+  {
+    id: '7',
+    name: 'Sarah Johnson',
+    role: 'Medical Technician',
+    department: 'Radiology',
+    status: 'Active',
+    avatar: 'https://avatar.iran.liara.run/public/7',
+    email: 'sarah.johnson@hospital.com',
+    phone: '+1 (555) 789-0123',
+  },
+  {
+    id: '8',
+    name: 'Dr. Emily Davis',
+    role: 'Oncologist',
+    department: 'Oncology',
+    status: 'Inactive',
+    avatar: 'https://avatar.iran.liara.run/public/8',
+    email: 'emily.davis@hospital.com',
+    phone: '+1 (555) 890-1234',
+  },
 ];
 
 const departments = [
@@ -120,6 +171,8 @@ const roles = [
   'Doctor',
   'Cardiologist',
   'Surgeon',
+  'Neurologist',
+  'Oncologist',
   'Registered Nurse',
   'Nurse Practitioner',
   'Physician Assistant',
@@ -127,16 +180,16 @@ const roles = [
   'Radiologist',
 ];
 
-const getStatusVariant = (status: string) => {
+const getStatusColor = (status: string) => {
   switch (status) {
     case 'Active':
-      return 'success';
+      return 'bg-green-100 text-green-800';
     case 'On Leave':
-      return 'warning';
+      return 'bg-yellow-100 text-yellow-800';
     case 'Inactive':
-      return 'destructive';
+      return 'bg-red-100 text-red-800';
     default:
-      return 'default';
+      return 'bg-gray-100 text-gray-800';
   }
 };
 
@@ -147,6 +200,7 @@ export const Staff: React.FC = () => {
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [formData, setFormData] = useState({
     name: '',
     role: '',
@@ -160,12 +214,11 @@ export const Staff: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1800); // Simulate 1.8 second loading time
-
+    }, 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  // Filter staff based on search term and department
+  // Filter staff based on search term, department, and status
   const filteredStaff = staffData.filter((staff) => {
     const matchesSearch =
       staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -177,7 +230,11 @@ export const Staff: React.FC = () => {
       selectedDepartment === 'all' ||
       staff.department.toLowerCase() === selectedDepartment.toLowerCase();
 
-    return matchesSearch && matchesDepartment;
+    const matchesStatus =
+      selectedStatus === 'all' ||
+      staff.status.toLowerCase() === selectedStatus.toLowerCase();
+
+    return matchesSearch && matchesDepartment && matchesStatus;
   });
 
   // Calculate statistics based on filtered data
@@ -226,6 +283,10 @@ export const Staff: React.FC = () => {
     }
 
     // Reset form and close modal
+    resetForm();
+  };
+
+  const resetForm = () => {
     setFormData({
       name: '',
       role: '',
@@ -255,19 +316,6 @@ export const Staff: React.FC = () => {
     setStaffData((prev) => prev.filter((staff) => staff.id !== staffId));
   };
 
-  const handleCancel = () => {
-    setFormData({
-      name: '',
-      role: '',
-      department: '',
-      status: 'Active',
-      email: '',
-      phone: '',
-    });
-    setEditingStaff(null);
-    setIsModalOpen(false);
-  };
-
   const handleAddNew = () => {
     setEditingStaff(null);
     setFormData({
@@ -283,72 +331,63 @@ export const Staff: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className='p-6'>
+      <div className='p-4 md:p-6 space-y-6'>
         <PageHeaderSkeleton />
 
-        <div className='mb-6 flex justify-between items-center'>
-          <div className='flex gap-4'>
-            <div className='h-10 w-64 bg-gray-200 rounded animate-pulse'></div>
-            <div className='h-10 w-48 bg-gray-200 rounded animate-pulse'></div>
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <div className='h-10 bg-gray-200 rounded animate-pulse'></div>
           </div>
-          <div className='h-10 w-32 bg-gray-200 rounded animate-pulse'></div>
+          <div className='flex gap-2'>
+            <div className='h-10 w-32 bg-gray-200 rounded animate-pulse'></div>
+            <div className='h-10 w-32 bg-gray-200 rounded animate-pulse'></div>
+          </div>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+        <div className='grid grid-cols-2 lg:grid-cols-4 gap-4'>
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
         </div>
 
-        <div className='bg-white rounded-lg border'>
-          <TableSkeleton rows={5} columns={6} />
-        </div>
+        <CardSkeleton>
+          <div className='block md:hidden space-y-4'>
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className='h-24 bg-gray-200 rounded animate-pulse'
+              ></div>
+            ))}
+          </div>
+          <div className='hidden md:block'>
+            <TableSkeleton rows={5} columns={6} />
+          </div>
+        </CardSkeleton>
       </div>
     );
   }
 
   return (
-    <div className='p-6'>
-      <div className='mb-8'>
-        <h1 className='text-2xl font-bold'>Staff Management</h1>
-        <p className='text-gray-600'>
-          Manage your healthcare staff and their information
-        </p>
-      </div>
-
-      <div className='mb-6 flex justify-between items-center'>
-        <div className='flex gap-4'>
-          <Input
-            type='text'
-            placeholder='Search staff...'
-            className='w-64'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Select
-            value={selectedDepartment}
-            onValueChange={setSelectedDepartment}
-          >
-            <SelectTrigger className='w-48'>
-              <SelectValue placeholder='All Departments' />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='all'>All Departments</SelectItem>
-              {departments.map((dept) => (
-                <SelectItem key={dept} value={dept.toLowerCase()}>
-                  {dept}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <div className='p-4 md:p-6 space-y-6'>
+      {/* Header */}
+      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+        <div>
+          <h1 className='text-2xl md:text-3xl font-bold tracking-tight'>
+            Staff Management
+          </h1>
+          <p className='text-muted-foreground'>
+            Manage your healthcare staff and their information
+          </p>
         </div>
-
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
-            <Button onClick={handleAddNew}>Add New Staff</Button>
+            <Button onClick={handleAddNew} className='w-full sm:w-auto'>
+              <Plus className='h-4 w-4 mr-2' />
+              Add Staff
+            </Button>
           </DialogTrigger>
-          <DialogContent className='sm:max-w-[500px]'>
+          <DialogContent className='sm:max-w-[500px] mx-4'>
             <DialogHeader>
               <DialogTitle>
                 {editingStaff ? 'Edit Staff Member' : 'Add New Staff Member'}
@@ -361,27 +400,27 @@ export const Staff: React.FC = () => {
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className='grid gap-4 py-4'>
-                <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='name' className='text-right'>
+                <div className='grid grid-cols-1 sm:grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='name' className='sm:text-right'>
                     Name
                   </Label>
                   <Input
                     id='name'
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className='col-span-3'
+                    className='sm:col-span-3'
                     required
                   />
                 </div>
-                <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='role' className='text-right'>
+                <div className='grid grid-cols-1 sm:grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='role' className='sm:text-right'>
                     Role
                   </Label>
                   <Select
                     value={formData.role}
                     onValueChange={(value) => handleInputChange('role', value)}
                   >
-                    <SelectTrigger className='col-span-3'>
+                    <SelectTrigger className='sm:col-span-3'>
                       <SelectValue placeholder='Select a role' />
                     </SelectTrigger>
                     <SelectContent>
@@ -393,8 +432,8 @@ export const Staff: React.FC = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='department' className='text-right'>
+                <div className='grid grid-cols-1 sm:grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='department' className='sm:text-right'>
                     Department
                   </Label>
                   <Select
@@ -403,7 +442,7 @@ export const Staff: React.FC = () => {
                       handleInputChange('department', value)
                     }
                   >
-                    <SelectTrigger className='col-span-3'>
+                    <SelectTrigger className='sm:col-span-3'>
                       <SelectValue placeholder='Select a department' />
                     </SelectTrigger>
                     <SelectContent>
@@ -415,8 +454,8 @@ export const Staff: React.FC = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='status' className='text-right'>
+                <div className='grid grid-cols-1 sm:grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='status' className='sm:text-right'>
                     Status
                   </Label>
                   <Select
@@ -428,7 +467,7 @@ export const Staff: React.FC = () => {
                       )
                     }
                   >
-                    <SelectTrigger className='col-span-3'>
+                    <SelectTrigger className='sm:col-span-3'>
                       <SelectValue placeholder='Select status' />
                     </SelectTrigger>
                     <SelectContent>
@@ -438,8 +477,8 @@ export const Staff: React.FC = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='email' className='text-right'>
+                <div className='grid grid-cols-1 sm:grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='email' className='sm:text-right'>
                     Email
                   </Label>
                   <Input
@@ -447,12 +486,12 @@ export const Staff: React.FC = () => {
                     type='email'
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
-                    className='col-span-3'
+                    className='sm:col-span-3'
                     required
                   />
                 </div>
-                <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='phone' className='text-right'>
+                <div className='grid grid-cols-1 sm:grid-cols-4 items-center gap-4'>
+                  <Label htmlFor='phone' className='sm:text-right'>
                     Phone
                   </Label>
                   <Input
@@ -460,16 +499,21 @@ export const Staff: React.FC = () => {
                     type='tel'
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
-                    className='col-span-3'
+                    className='sm:col-span-3'
                     required
                   />
                 </div>
               </div>
-              <DialogFooter>
-                <Button type='button' variant='outline' onClick={handleCancel}>
+              <DialogFooter className='flex-col sm:flex-row gap-2'>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={resetForm}
+                  className='w-full sm:w-auto'
+                >
                   Cancel
                 </Button>
-                <Button type='submit'>
+                <Button type='submit' className='w-full sm:w-auto'>
                   {editingStaff ? 'Update Staff' : 'Add Staff'}
                 </Button>
               </DialogFooter>
@@ -478,29 +522,72 @@ export const Staff: React.FC = () => {
         </Dialog>
       </div>
 
+      {/* Search and Filters */}
+      <div className='flex flex-col sm:flex-row gap-4'>
+        <div className='relative flex-1'>
+          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+          <Input
+            type='text'
+            placeholder='Search staff members...'
+            className='pl-10'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className='flex gap-2'>
+          <Select
+            value={selectedDepartment}
+            onValueChange={setSelectedDepartment}
+          >
+            <SelectTrigger className='w-full sm:w-[160px]'>
+              <Filter className='h-4 w-4 mr-2' />
+              <SelectValue placeholder='Department' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='all'>All Departments</SelectItem>
+              {departments.map((dept) => (
+                <SelectItem key={dept} value={dept.toLowerCase()}>
+                  {dept}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+            <SelectTrigger className='w-full sm:w-[140px]'>
+              <SelectValue placeholder='Status' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='all'>All Status</SelectItem>
+              <SelectItem value='active'>Active</SelectItem>
+              <SelectItem value='on leave'>On Leave</SelectItem>
+              <SelectItem value='inactive'>Inactive</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       {/* Statistics Cards */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+      <div className='grid grid-cols-2 lg:grid-cols-4 gap-4'>
         <Card>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>
-              Total Staff
-              {(searchTerm || selectedDepartment !== 'all') && ' (Filtered)'}
-            </CardTitle>
+            <CardTitle className='text-sm font-medium'>Total Staff</CardTitle>
             <Users className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
             <div className='text-2xl font-bold'>{totalStaff}</div>
             <p className='text-xs text-muted-foreground'>
-              {searchTerm || selectedDepartment !== 'all'
-                ? `Showing filtered results`
-                : `Total staff members`}
+              {searchTerm ||
+              selectedDepartment !== 'all' ||
+              selectedStatus !== 'all'
+                ? 'Filtered results'
+                : 'Total members'}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Active Staff</CardTitle>
+            <CardTitle className='text-sm font-medium'>Active</CardTitle>
             <UserCheck className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
@@ -527,95 +614,185 @@ export const Staff: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className='text-2xl font-bold'>{uniqueDepartments}</div>
-            <p className='text-xs text-muted-foreground'>
-              {searchTerm || selectedDepartment !== 'all'
-                ? `In filtered results`
-                : `Total departments`}
-            </p>
+            <p className='text-xs text-muted-foreground'>Active departments</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Staff Table */}
+      {/* Staff List */}
       <Card>
         <CardHeader>
-          <CardTitle>Staff Members</CardTitle>
-          <CardDescription>
-            {searchTerm || selectedDepartment !== 'all'
-              ? `Showing ${filteredStaff.length} filtered staff members`
-              : `Manage your healthcare staff and their information`}
-          </CardDescription>
+          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+            <div>
+              <CardTitle>Staff Members</CardTitle>
+              <CardDescription>
+                {searchTerm ||
+                selectedDepartment !== 'all' ||
+                selectedStatus !== 'all'
+                  ? `Showing ${filteredStaff.length} filtered staff members`
+                  : `Manage your healthcare staff and their information`}
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Staff Member</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead className='text-right'>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredStaff.map((staff) => (
-                <TableRow key={staff.id}>
-                  <TableCell className='font-medium'>
-                    <div className='flex items-center gap-2'>
-                      <img
-                        src={staff.avatar}
-                        alt={staff.name}
-                        className='h-8 w-8 rounded-full'
-                      />
-                      <span>{staff.name}</span>
+          {/* Mobile Card View */}
+          <div className='block md:hidden space-y-4'>
+            {filteredStaff.map((staff) => (
+              <Card key={staff.id} className='p-4'>
+                <div className='flex items-start justify-between'>
+                  <div className='flex items-center gap-3 flex-1'>
+                    <img
+                      src={staff.avatar}
+                      alt={staff.name}
+                      className='h-12 w-12 rounded-full object-cover'
+                    />
+                    <div className='flex-1 min-w-0'>
+                      <h3 className='font-semibold text-sm truncate'>
+                        {staff.name}
+                      </h3>
+                      <p className='text-sm text-muted-foreground truncate'>
+                        {staff.role}
+                      </p>
+                      <p className='text-xs text-muted-foreground'>
+                        {staff.department}
+                      </p>
                     </div>
-                  </TableCell>
-                  <TableCell>{staff.role}</TableCell>
-                  <TableCell>{staff.department}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        getStatusVariant(staff.status) as
-                          | 'default'
-                          | 'secondary'
-                          | 'destructive'
-                          | 'outline'
-                          | 'success'
-                          | 'warning'
-                      }
-                    >
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <Badge className={getStatusColor(staff.status)}>
                       {staff.status}
                     </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className='text-sm'>
-                      <div>{staff.email}</div>
-                      <div className='text-gray-500'>{staff.phone}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell className='text-right'>
-                    <div className='flex justify-end gap-2'>
-                      <Button
-                        variant='outline'
-                        size='sm'
-                        onClick={() => handleEdit(staff)}
-                      >
-                        <Edit className='h-4 w-4' />
-                      </Button>
-                      <Button
-                        variant='outline'
-                        size='sm'
-                        onClick={() => handleDelete(staff.id)}
-                      >
-                        <Trash2 className='h-4 w-4' />
-                      </Button>
-                    </div>
-                  </TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant='ghost' size='sm'>
+                          <MoreVertical className='h-4 w-4' />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align='end'>
+                        <DropdownMenuItem onClick={() => handleEdit(staff)}>
+                          <Edit className='h-4 w-4 mr-2' />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(staff.id)}
+                          className='text-red-600'
+                        >
+                          <Trash2 className='h-4 w-4 mr-2' />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+                <div className='mt-3 pt-3 border-t space-y-2'>
+                  <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+                    <Mail className='h-4 w-4' />
+                    <span className='truncate'>{staff.email}</span>
+                  </div>
+                  <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+                    <Phone className='h-4 w-4' />
+                    <span>{staff.phone}</span>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className='hidden md:block'>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Staff Member</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Department</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead className='text-right'>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredStaff.map((staff) => (
+                  <TableRow key={staff.id}>
+                    <TableCell className='font-medium'>
+                      <div className='flex items-center gap-3'>
+                        <img
+                          src={staff.avatar}
+                          alt={staff.name}
+                          className='h-10 w-10 rounded-full object-cover'
+                        />
+                        <span>{staff.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{staff.role}</TableCell>
+                    <TableCell>{staff.department}</TableCell>
+                    <TableCell>
+                      <Badge className={getStatusColor(staff.status)}>
+                        {staff.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className='text-sm'>
+                        <div className='flex items-center gap-1'>
+                          <Mail className='h-3 w-3' />
+                          {staff.email}
+                        </div>
+                        <div className='flex items-center gap-1 text-muted-foreground mt-1'>
+                          <Phone className='h-3 w-3' />
+                          {staff.phone}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      <div className='flex justify-end gap-2'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleEdit(staff)}
+                        >
+                          <Edit className='h-4 w-4' />
+                        </Button>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleDelete(staff.id)}
+                        >
+                          <Trash2 className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {filteredStaff.length === 0 && (
+            <div className='text-center py-8'>
+              <Users className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
+              <h3 className='text-lg font-semibold mb-2'>
+                No staff members found
+              </h3>
+              <p className='text-muted-foreground mb-4'>
+                {searchTerm ||
+                selectedDepartment !== 'all' ||
+                selectedStatus !== 'all'
+                  ? 'Try adjusting your search or filter criteria.'
+                  : 'Get started by adding your first staff member.'}
+              </p>
+              {!(
+                searchTerm ||
+                selectedDepartment !== 'all' ||
+                selectedStatus !== 'all'
+              ) && (
+                <Button onClick={handleAddNew}>
+                  <Plus className='h-4 w-4 mr-2' />
+                  Add First Staff Member
+                </Button>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

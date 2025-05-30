@@ -27,7 +27,7 @@ import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
-import { Plus, Edit, X, Calendar, Clock, User as UserIcon } from 'lucide-react';
+import { Plus, Edit, X, Calendar, Clock } from 'lucide-react';
 import { useErrorHandler, ValidationError } from '../hooks/useErrorHandler';
 import {
   PageHeaderSkeleton,
@@ -643,14 +643,18 @@ export const User: React.FC = () => {
                         Current Time: {formatTime(getCurrentTime())}
                       </p>
                     </div>
-                    <DialogFooter>
+                    <DialogFooter className='flex-col sm:flex-row gap-2'>
                       <Button
                         variant='outline'
                         onClick={() => setIsAttendanceModalOpen(false)}
+                        className='w-full sm:w-auto'
                       >
                         Cancel
                       </Button>
-                      <Button onClick={handleAttendance}>
+                      <Button
+                        onClick={handleAttendance}
+                        className='w-full sm:w-auto'
+                      >
                         Confirm{' '}
                         {attendanceAction === 'checkin'
                           ? 'Check In'
@@ -826,7 +830,7 @@ export const User: React.FC = () => {
         {/* Leave Requests */}
         <Card>
           <CardHeader>
-            <div className='flex justify-between items-center'>
+            <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4'>
               <div>
                 <CardTitle>Leave Requests</CardTitle>
                 <CardDescription>Your leave applications</CardDescription>
@@ -838,13 +842,13 @@ export const User: React.FC = () => {
                 <DialogTrigger asChild>
                   <Button
                     onClick={openNewLeaveModal}
-                    className='flex items-center gap-2'
+                    className='flex items-center gap-2 w-full sm:w-auto'
                   >
                     <Plus className='h-4 w-4' />
                     Apply Leave
                   </Button>
                 </DialogTrigger>
-                <DialogContent className='sm:max-w-[500px]'>
+                <DialogContent className='sm:max-w-[500px] mx-4'>
                   <DialogHeader>
                     <DialogTitle>
                       {editingLeave ? 'Edit Leave Request' : 'Apply for Leave'}
@@ -856,7 +860,7 @@ export const User: React.FC = () => {
                     </DialogDescription>
                   </DialogHeader>
                   <div className='space-y-4 py-4'>
-                    <div className='grid grid-cols-2 gap-4'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                       <div className='space-y-2'>
                         <Label htmlFor='startDate'>Start Date</Label>
                         <Input
@@ -941,10 +945,11 @@ export const User: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <DialogFooter>
+                  <DialogFooter className='flex-col sm:flex-row gap-2'>
                     <Button
                       variant='outline'
                       onClick={() => setIsLeaveModalOpen(false)}
+                      className='w-full sm:w-auto'
                     >
                       Cancel
                     </Button>
@@ -955,6 +960,7 @@ export const User: React.FC = () => {
                         !leaveFormData.endDate ||
                         !leaveFormData.reason.trim()
                       }
+                      className='w-full sm:w-auto'
                     >
                       {editingLeave ? 'Update Request' : 'Submit Request'}
                     </Button>
@@ -1033,12 +1039,12 @@ export const User: React.FC = () => {
                       </div>
 
                       {leave.status === 'Pending' && (
-                        <div className='flex gap-2 ml-4'>
+                        <div className='flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:ml-4'>
                           <Button
                             variant='outline'
                             size='sm'
                             onClick={() => handleEditLeave(leave)}
-                            className='flex items-center gap-1'
+                            className='flex items-center gap-1 w-full sm:w-auto'
                           >
                             <Edit className='h-3 w-3' />
                             Edit
@@ -1047,7 +1053,7 @@ export const User: React.FC = () => {
                             variant='outline'
                             size='sm'
                             onClick={() => handleCancelLeave(leave.id)}
-                            className='flex items-center gap-1 text-red-600 hover:text-red-700 hover:border-red-300'
+                            className='flex items-center gap-1 text-red-600 hover:text-red-700 hover:border-red-300 w-full sm:w-auto'
                           >
                             <X className='h-3 w-3' />
                             Cancel

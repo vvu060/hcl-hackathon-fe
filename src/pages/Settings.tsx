@@ -375,14 +375,19 @@ export const Settings: React.FC = () => {
                     settings.
                   </DialogDescription>
                 </DialogHeader>
-                <DialogFooter>
+                <DialogFooter className='flex-col sm:flex-row gap-2'>
                   <Button
                     variant='outline'
                     onClick={() => setIsDeleteDialogOpen(false)}
+                    className='w-full sm:w-auto'
                   >
                     Cancel
                   </Button>
-                  <Button variant='destructive' onClick={handleClearData}>
+                  <Button
+                    variant='destructive'
+                    onClick={handleClearData}
+                    className='w-full sm:w-auto'
+                  >
                     Yes, clear all data
                   </Button>
                 </DialogFooter>

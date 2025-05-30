@@ -21,6 +21,8 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from './components/ui/sidebar';
+import { Separator } from './components/ui/separator';
+import logoImage from './assets/logo.png';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -40,7 +42,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isAdmin } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to='/login' replace />;
+    return <Navigate to='/' replace />;
   }
 
   if (!isAdmin) {
@@ -57,8 +59,22 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <div className='flex min-h-screen w-full'>
         <AppSidebar />
         <SidebarInset>
-          <header className='flex h-16 shrink-0 items-center gap-2 border-b px-4'>
+          <header className='flex h-16 shrink-0 items-center gap-3 border-b px-4'>
             <SidebarTrigger className='-ml-1' />
+            <Separator orientation='vertical' className='h-6' />
+            <div className='flex items-center gap-2'>
+              <img
+                src={logoImage}
+                alt='HCL Healthcare'
+                className='h-10 w-10 sm:h-8 sm:w-8 object-contain'
+              />
+              <span className='font-semibold text-lg text-foreground hidden sm:block'>
+                HCL Healthcare
+              </span>
+              <span className='font-semibold text-base sm:text-sm text-foreground sm:hidden'>
+                HCL
+              </span>
+            </div>
           </header>
           <main className='flex-1 overflow-auto'>
             <ErrorBoundary>{children}</ErrorBoundary>
