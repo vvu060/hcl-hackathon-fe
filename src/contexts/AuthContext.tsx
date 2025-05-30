@@ -13,6 +13,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,17 +44,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Check for existing session on mount
   useEffect(() => {
-    const savedUser = localStorage.getItem('shiftly_user');
-    if (savedUser) {
+    const initializeAuth = () => {
       try {
-        setUser(JSON.parse(savedUser));
-      } catch {
+        const savedUser = localStorage.getItem('shiftly_user');
+        if (savedUser) {
+          const userData = JSON.parse(savedUser);
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error('Error loading user from localStorage:', error);
         localStorage.removeItem('shiftly_user');
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -93,6 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         logout,
         isAuthenticated,
         isAdmin,
+        isLoading,
       }}
     >
       {children}

@@ -28,7 +28,16 @@ import logoImage from './assets/logo.png';
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center min-h-screen'>
+        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to='/login' replace />;
@@ -39,10 +48,19 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
 
 // Admin Route Component
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center min-h-screen'>
+        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
-    return <Navigate to='/' replace />;
+    return <Navigate to='/login' replace />;
   }
 
   if (!isAdmin) {

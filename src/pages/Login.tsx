@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, Github, Chrome } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -24,8 +24,29 @@ export const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, authLoading, navigate]);
+
+  // Show loading spinner while checking authentication
+  if (authLoading) {
+    return (
+      <div className='flex items-center justify-center min-h-screen bg-gray-50'>
+        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
+      </div>
+    );
+  }
+
+  // Don't render login form if user is authenticated
+  if (isAuthenticated) {
+    return null;
+  }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
