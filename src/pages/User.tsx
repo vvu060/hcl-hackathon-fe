@@ -168,7 +168,7 @@ const calculateWorkingHours = (checkIn: string, checkOut: string) => {
 };
 
 export const User: React.FC = () => {
-  const { handleError, handleAsyncError } = useErrorHandler();
+  const { handleError } = useErrorHandler();
   const [isLoading, setIsLoading] = useState(true);
 
   const [attendanceRecords, setAttendanceRecords] = useState<
@@ -979,9 +979,9 @@ export const User: React.FC = () => {
                     key={leave.id}
                     className='p-4 border rounded-lg hover:shadow-sm transition-shadow'
                   >
-                    <div className='flex justify-between items-start mb-3'>
-                      <div className='flex-1'>
-                        <div className='flex items-center gap-2 mb-1'>
+                    <div className='flex flex-col sm:flex-row justify-between items-start gap-4 mb-3'>
+                      <div className='flex-1 min-w-0'>
+                        <div className='flex items-center gap-2 mb-1 flex-wrap'>
                           <p className='font-medium text-lg'>
                             {leave.type} Leave
                           </p>
@@ -990,7 +990,7 @@ export const User: React.FC = () => {
                           </Badge>
                         </div>
                         <div className='flex items-center gap-4 text-sm text-gray-600 mb-2'>
-                          <div className='flex items-center gap-1'>
+                          <div className='flex items-center gap-1 whitespace-nowrap'>
                             <Calendar className='h-4 w-4' />
                             <span>
                               {new Date(leave.startDate).toLocaleDateString(
@@ -1012,7 +1012,7 @@ export const User: React.FC = () => {
                               )}
                             </span>
                           </div>
-                          <div className='flex items-center gap-1'>
+                          <div className='flex items-center gap-1 whitespace-nowrap'>
                             <Clock className='h-4 w-4' />
                             <span>
                               {calculateLeaveDays(

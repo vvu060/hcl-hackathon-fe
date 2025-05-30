@@ -328,7 +328,7 @@ export const Schedule: React.FC = () => {
   // Helper function to get day name from date
   const getDayName = (dateString: string): string => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { weekday: 'long' });
+    return date.toLocaleDateString('en-US', { weekday: 'short' });
   };
 
   // Get current week dates
