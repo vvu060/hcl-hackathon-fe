@@ -1,54 +1,321 @@
-# React + TypeScript + Vite
+# HCL Healthcare Staff Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive healthcare staff management application built for the **HCL Hackathon**. This system provides comprehensive tools for managing healthcare staff schedules, roles, and operations with a focus on user experience and mobile-first design.
 
-Currently, two official plugins are available:
+## 🏆 Hackathon Project
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project was developed as part of the HCL Hackathon, showcasing modern web development practices and healthcare industry solutions.
 
-## Expanding the ESLint configuration
+## 📸 Screenshots
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Dashboard Overview
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+![Dashboard Screenshot](./screenshots/dashboard.png)
+_Main dashboard showing real-time staff overview and today's schedule_
+
+### Staff Management
+
+![Staff Management Screenshot](./screenshots/staff-management.png)
+_Comprehensive staff directory with detailed profiles and management tools_
+
+### Schedule Management
+
+![Schedule Management Screenshot](./screenshots/schedule-management.png)
+_Interactive schedule management with shift configuration_
+
+### Mobile Interface
+
+![Mobile Interface Screenshot](./screenshots/mobile-interface.png)
+_Responsive mobile-first design across all devices_
+
+### Login Interface
+
+![Login Screenshot](./screenshots/login.png)
+_Secure authentication with role-based access control_
+
+## 🚀 Features
+
+### 🔐 Authentication & Authorization
+
+- **Role-based access control** with Admin and User roles
+- **Secure login system** with demo credentials
+- **Protected routes** ensuring proper access control
+- **Social login integration** (Google, GitHub)
+
+![Authentication Flow](./screenshots/auth-flow.png)
+_Authentication and authorization workflow_
+
+### 📊 Dashboard & Analytics
+
+- **Real-time staff overview** with current shift status
+- **Today's schedule** showing active staff members
+- **Upcoming shifts** for better planning
+- **Interactive data visualization**
+
+![Dashboard Analytics](./screenshots/dashboard-analytics.png)
+_Real-time analytics and staff overview_
+
+### �� Staff Management
+
+- **Complete staff directory** with detailed profiles
+- **Add, edit, and delete** staff members
+- **Department and role management**
+- **Status tracking** (Active, Inactive, On Leave)
+- **Contact information management**
+
+![Staff Directory](./screenshots/staff-directory.png)
+_Complete staff directory with search and filter capabilities_
+
+### 📅 Schedule Management
+
+- **Shift type configuration** (Morning, Day, Evening, Night, Extended shifts)
+- **Staff scheduling** with drag-and-drop interface
+- **Shift conflict detection**
+- **Schedule optimization**
+
+![Schedule Interface](./screenshots/schedule-interface.png)
+_Interactive schedule management with conflict detection_
+
+### 📈 Reports & Analytics
+
+- **Staff utilization reports**
+- **Department-wise analytics**
+- **Shift pattern analysis**
+- **Export functionality**
+
+![Reports Dashboard](./screenshots/reports-dashboard.png)
+_Comprehensive reports and analytics dashboard_
+
+### ⚙️ Settings & Configuration
+
+- **System preferences**
+- **User profile management**
+- **Department configuration**
+- **Shift type customization**
+
+![Settings Panel](./screenshots/settings-panel.png)
+_System configuration and user preferences_
+
+### 📱 Mobile-First Design
+
+- **Responsive design** that works on all devices
+- **Touch-friendly interface**
+- **Optimized mobile navigation**
+- **Progressive Web App capabilities**
+
+![Mobile Responsive](./screenshots/mobile-responsive.png)
+_Mobile-first responsive design across different screen sizes_
+
+## 🛠️ Technology Stack
+
+### Frontend
+
+- **React 19** - Latest React with modern features
+- **TypeScript** - Type-safe development
+- **Vite** - Fast build tool and development server
+- **React Router DOM** - Client-side routing
+
+### UI/UX
+
+- **Tailwind CSS 4** - Utility-first CSS framework
+- **Radix UI** - Accessible component primitives
+- **Lucide React** - Beautiful icon library
+- **Custom UI Components** - Built with shadcn/ui patterns
+
+### State Management
+
+- **React Context** - For authentication and global state
+- **React Hooks** - For local component state
+
+### Development Tools
+
+- **ESLint** - Code linting and quality
+- **TypeScript ESLint** - TypeScript-specific linting
+- **Vite Plugin React** - React integration for Vite
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn package manager
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd hcl-hackathon-react
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser**
+   Navigate to `http://localhost:5173`
+
+### Demo Credentials
+
+The application includes demo credentials for testing:
+
+- **Admin Access:**
+
+  - Email: `admin@shiftly.com`
+  - Password: `admin123`
+
+- **User Access:**
+  - Email: `user@shiftly.com`
+  - Password: `user123`
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Base UI components (buttons, inputs, etc.)
+│   ├── AppSidebar.tsx  # Navigation sidebar
+│   ├── Dashboard.tsx   # Main dashboard component
+│   ├── ErrorBoundary.tsx # Error handling
+│   └── Toast.tsx       # Notification system
+├── pages/              # Page components
+│   ├── Login.tsx       # Authentication page
+│   ├── Dashboard.tsx   # Main dashboard
+│   ├── Staff.tsx       # Staff management
+│   ├── Schedule.tsx    # Schedule management
+│   ├── Reports.tsx     # Analytics and reports
+│   ├── Settings.tsx    # System settings
+│   └── User.tsx        # User profile
+├── contexts/           # React contexts
+│   └── AuthContext.tsx # Authentication context
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions
+├── assets/             # Static assets
+└── App.tsx             # Main application component
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🎯 Key Features Breakdown
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Admin Features
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+- **Full staff management** - Add, edit, delete staff members
+- **Schedule creation** - Create and manage shift schedules
+- **Reports access** - View analytics and generate reports
+- **System settings** - Configure departments, roles, and shifts
+
+![Admin Interface](./screenshots/admin-interface.png)
+_Admin dashboard with full management capabilities_
+
+### User Features
+
+- **Personal dashboard** - View assigned shifts and schedule
+- **Profile management** - Update personal information
+- **Schedule viewing** - See upcoming shifts and colleagues
+
+![User Interface](./screenshots/user-interface.png)
+_User dashboard with personal schedule and profile management_
+
+### Responsive Design
+
+- **Mobile-first approach** - Optimized for mobile devices
+- **Tablet support** - Enhanced experience on tablets
+- **Desktop optimization** - Full-featured desktop interface
+
+![Responsive Design](./screenshots/responsive-design.png)
+_Application interface across desktop, tablet, and mobile devices_
+
+## 🔧 Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+## 🎨 Design System
+
+The application uses a consistent design system with:
+
+- **Color palette** - Healthcare-friendly colors
+- **Typography** - Clear, readable fonts
+- **Spacing** - Consistent spacing scale
+- **Components** - Reusable UI components
+- **Icons** - Lucide React icon library
+
+## 🔒 Security Features
+
+- **Authentication** - Secure login system
+- **Authorization** - Role-based access control
+- **Route protection** - Protected routes for authenticated users
+- **Input validation** - Form validation and sanitization
+
+## 📱 Mobile Features
+
+- **Touch gestures** - Swipe and tap interactions
+- **Responsive tables** - Mobile-optimized data display
+- **Collapsible navigation** - Space-efficient mobile menu
+- **Touch-friendly buttons** - Appropriately sized touch targets
+
+## 🚀 Deployment
+
+### Build for Production
+
+```bash
+npm run build
 ```
+
+The build artifacts will be stored in the `dist/` directory.
+
+### Deployment Options
+
+- **Vercel** - Recommended for React applications
+- **Netlify** - Easy deployment with continuous integration
+- **AWS S3** - Static website hosting
+- **GitHub Pages** - Free hosting for public repositories
+
+## 🤝 Contributing
+
+This project was developed for the HCL Hackathon. For future enhancements:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## 📄 License
+
+This project is part of the HCL Hackathon submission.
+
+## 🏥 Healthcare Industry Focus
+
+This application addresses real-world healthcare challenges:
+
+- **Staff shortage management**
+- **Efficient scheduling**
+- **Compliance tracking**
+- **Resource optimization**
+- **Communication improvement**
+
+## 🎯 Future Enhancements
+
+- **Real-time notifications**
+- **Integration with hospital systems**
+- **Advanced analytics**
+- **Mobile app development**
+- **AI-powered scheduling**
+
+## 📞 Support
+
+For questions or support regarding this hackathon project, please reach out to the development team.
+
+---
+
+**Built with ❤️ for the HCL Hackathon**
