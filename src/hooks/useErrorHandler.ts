@@ -109,16 +109,22 @@ const getErrorTitle = (error: Error): string => {
 
 // Error types for better error handling
 export class ValidationError extends Error {
-  constructor(message: string, public field?: string) {
+  public field?: string;
+
+  constructor(message: string, field?: string) {
     super(message);
     this.name = 'ValidationError';
+    this.field = field;
   }
 }
 
 export class NetworkError extends Error {
-  constructor(message: string, public status?: number) {
+  public status?: number;
+
+  constructor(message: string, status?: number) {
     super(message);
     this.name = 'NetworkError';
+    this.status = status;
   }
 }
 
