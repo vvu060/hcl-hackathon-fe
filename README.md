@@ -265,4 +265,4 @@ For questions or support regarding this hackathon project, please reach out to t
 
 ---
 
-**Built with ❤️ for the HCL Hackathon**
+**Built with ❤️ Love for the HCL Hackathon**
