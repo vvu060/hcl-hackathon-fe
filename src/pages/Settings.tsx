@@ -1,202 +1,403 @@
-import React from 'react';
+import React, { useState } from 'react';
+import {
+  Settings as SettingsIcon,
+  Bell,
+  Shield,
+  Building,
+  Save,
+  Download,
+  Upload,
+  Trash2,
+  Plus,
+  Edit,
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
+import { Separator } from '../components/ui/separator';
+import { Badge } from '../components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../components/ui/dialog';
 
 export const Settings: React.FC = () => {
+  const [hospitalName, setHospitalName] = useState('General Hospital');
+  const [timeZone, setTimeZone] = useState('EST');
+  const [shiftDuration, setShiftDuration] = useState('8');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // Notification settings
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [smsNotifications, setSmsNotifications] = useState(false);
+  const [shiftReminders, setShiftReminders] = useState(true);
+  const [overtimeAlerts, setOvertimeAlerts] = useState(true);
+
+  const departments = [
+    'Emergency Department',
+    'Surgery Department',
+    'ICU Department',
+    'Cardiology Department',
+    'Pediatrics Department',
+  ];
+
+  const handleSaveSettings = () => {
+    console.log('Saving settings...');
+    // In a real app, this would save settings to the backend
+  };
+
+  const handleUpdatePassword = () => {
+    if (newPassword !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+    console.log('Updating password...');
+    // In a real app, this would update the password
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+  };
+
+  const handleExportData = () => {
+    console.log('Exporting data...');
+    // In a real app, this would export data
+  };
+
+  const handleImportData = () => {
+    console.log('Importing data...');
+    // In a real app, this would import data
+  };
+
+  const handleClearData = () => {
+    console.log('Clearing all data...');
+    setIsDeleteDialogOpen(false);
+    // In a real app, this would clear all data
+  };
+
   return (
-    <div className='p-6'>
+    <div className='p-6 space-y-6'>
       <div className='mb-8'>
-        <h1 className='text-2xl font-bold'>Settings</h1>
-        <p className='text-gray-600'>
+        <h1 className='text-3xl font-bold tracking-tight'>Settings</h1>
+        <p className='text-muted-foreground'>
           Manage your application settings and preferences
         </p>
       </div>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-        <div className='bg-white p-6 rounded-lg border shadow-sm'>
-          <h3 className='text-lg font-semibold mb-4'>General Settings</h3>
-          <div className='space-y-4'>
-            <div>
-              <label className='block text-sm font-medium mb-2'>
-                Hospital Name
-              </label>
-              <input
-                type='text'
-                defaultValue='General Hospital'
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+        {/* General Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2'>
+              <SettingsIcon className='h-5 w-5' />
+              General Settings
+            </CardTitle>
+            <CardDescription>
+              Configure basic application settings
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='hospital-name'>Hospital Name</Label>
+              <Input
+                id='hospital-name'
+                value={hospitalName}
+                onChange={(e) => setHospitalName(e.target.value)}
+                placeholder='Enter hospital name'
               />
             </div>
-            <div>
-              <label className='block text-sm font-medium mb-2'>
-                Time Zone
-              </label>
-              <select className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'>
-                <option value='EST'>Eastern Standard Time (EST)</option>
-                <option value='CST'>Central Standard Time (CST)</option>
-                <option value='MST'>Mountain Standard Time (MST)</option>
-                <option value='PST'>Pacific Standard Time (PST)</option>
-              </select>
-            </div>
-            <div>
-              <label className='block text-sm font-medium mb-2'>
-                Default Shift Duration
-              </label>
-              <select className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'>
-                <option value='8'>8 hours</option>
-                <option value='10'>10 hours</option>
-                <option value='12'>12 hours</option>
-              </select>
-            </div>
-          </div>
-        </div>
 
-        <div className='bg-white p-6 rounded-lg border shadow-sm'>
-          <h3 className='text-lg font-semibold mb-4'>Notification Settings</h3>
-          <div className='space-y-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='timezone'>Time Zone</Label>
+              <Select value={timeZone} onValueChange={setTimeZone}>
+                <SelectTrigger>
+                  <SelectValue placeholder='Select timezone' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='EST'>
+                    Eastern Standard Time (EST)
+                  </SelectItem>
+                  <SelectItem value='CST'>
+                    Central Standard Time (CST)
+                  </SelectItem>
+                  <SelectItem value='MST'>
+                    Mountain Standard Time (MST)
+                  </SelectItem>
+                  <SelectItem value='PST'>
+                    Pacific Standard Time (PST)
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='shift-duration'>Default Shift Duration</Label>
+              <Select value={shiftDuration} onValueChange={setShiftDuration}>
+                <SelectTrigger>
+                  <SelectValue placeholder='Select duration' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='8'>8 hours</SelectItem>
+                  <SelectItem value='10'>10 hours</SelectItem>
+                  <SelectItem value='12'>12 hours</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Notification Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2'>
+              <Bell className='h-5 w-5' />
+              Notification Settings
+            </CardTitle>
+            <CardDescription>
+              Configure how you receive notifications
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-6'>
             <div className='flex items-center justify-between'>
-              <div>
-                <p className='font-medium'>Email Notifications</p>
-                <p className='text-sm text-gray-600'>
+              <div className='space-y-0.5'>
+                <Label>Email Notifications</Label>
+                <p className='text-sm text-muted-foreground'>
                   Receive email alerts for schedule changes
                 </p>
               </div>
               <input
                 type='checkbox'
-                defaultChecked
-                className='h-4 w-4 text-blue-600'
+                checked={emailNotifications}
+                onChange={(e) => setEmailNotifications(e.target.checked)}
+                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
               />
             </div>
+
             <div className='flex items-center justify-between'>
-              <div>
-                <p className='font-medium'>SMS Notifications</p>
-                <p className='text-sm text-gray-600'>
+              <div className='space-y-0.5'>
+                <Label>SMS Notifications</Label>
+                <p className='text-sm text-muted-foreground'>
                   Receive text messages for urgent updates
                 </p>
               </div>
-              <input type='checkbox' className='h-4 w-4 text-blue-600' />
+              <input
+                type='checkbox'
+                checked={smsNotifications}
+                onChange={(e) => setSmsNotifications(e.target.checked)}
+                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
+              />
             </div>
+
             <div className='flex items-center justify-between'>
-              <div>
-                <p className='font-medium'>Shift Reminders</p>
-                <p className='text-sm text-gray-600'>
+              <div className='space-y-0.5'>
+                <Label>Shift Reminders</Label>
+                <p className='text-sm text-muted-foreground'>
                   Get reminders before shifts start
                 </p>
               </div>
               <input
                 type='checkbox'
-                defaultChecked
-                className='h-4 w-4 text-blue-600'
+                checked={shiftReminders}
+                onChange={(e) => setShiftReminders(e.target.checked)}
+                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
               />
             </div>
+
             <div className='flex items-center justify-between'>
-              <div>
-                <p className='font-medium'>Overtime Alerts</p>
-                <p className='text-sm text-gray-600'>
+              <div className='space-y-0.5'>
+                <Label>Overtime Alerts</Label>
+                <p className='text-sm text-muted-foreground'>
                   Alert when staff approach overtime limits
                 </p>
               </div>
               <input
                 type='checkbox'
-                defaultChecked
-                className='h-4 w-4 text-blue-600'
+                checked={overtimeAlerts}
+                onChange={(e) => setOvertimeAlerts(e.target.checked)}
+                className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
               />
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className='bg-white p-6 rounded-lg border shadow-sm'>
-          <h3 className='text-lg font-semibold mb-4'>Security Settings</h3>
-          <div className='space-y-4'>
-            <div>
-              <label className='block text-sm font-medium mb-2'>
-                Current Password
-              </label>
-              <input
+        {/* Security Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2'>
+              <Shield className='h-5 w-5' />
+              Security Settings
+            </CardTitle>
+            <CardDescription>
+              Update your password and security preferences
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='current-password'>Current Password</Label>
+              <Input
+                id='current-password'
                 type='password'
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder='Enter current password'
               />
             </div>
-            <div>
-              <label className='block text-sm font-medium mb-2'>
-                New Password
-              </label>
-              <input
+
+            <div className='space-y-2'>
+              <Label htmlFor='new-password'>New Password</Label>
+              <Input
+                id='new-password'
                 type='password'
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder='Enter new password'
               />
             </div>
-            <div>
-              <label className='block text-sm font-medium mb-2'>
-                Confirm New Password
-              </label>
-              <input
+
+            <div className='space-y-2'>
+              <Label htmlFor='confirm-password'>Confirm New Password</Label>
+              <Input
+                id='confirm-password'
                 type='password'
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder='Confirm new password'
               />
             </div>
-            <button className='w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700'>
+
+            <Button
+              onClick={handleUpdatePassword}
+              className='w-full'
+              disabled={!currentPassword || !newPassword || !confirmPassword}
+            >
+              <Shield className='mr-2 h-4 w-4' />
               Update Password
-            </button>
-          </div>
-        </div>
+            </Button>
+          </CardContent>
+        </Card>
 
-        <div className='bg-white p-6 rounded-lg border shadow-sm'>
-          <h3 className='text-lg font-semibold mb-4'>Department Management</h3>
-          <div className='space-y-4'>
-            <div className='flex justify-between items-center'>
-              <span>Emergency Department</span>
-              <button className='text-blue-600 hover:text-blue-800 text-sm'>
-                Edit
-              </button>
+        {/* Department Management */}
+        <Card>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2'>
+              <Building className='h-5 w-5' />
+              Department Management
+            </CardTitle>
+            <CardDescription>
+              Manage hospital departments and their settings
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            <div className='space-y-3'>
+              {departments.map((department, index) => (
+                <div
+                  key={index}
+                  className='flex items-center justify-between p-3 border rounded-lg'
+                >
+                  <div className='flex items-center gap-3'>
+                    <Badge variant='secondary'>{department}</Badge>
+                  </div>
+                  <Button variant='outline' size='sm'>
+                    <Edit className='mr-2 h-4 w-4' />
+                    Edit
+                  </Button>
+                </div>
+              ))}
             </div>
-            <div className='flex justify-between items-center'>
-              <span>Surgery Department</span>
-              <button className='text-blue-600 hover:text-blue-800 text-sm'>
-                Edit
-              </button>
-            </div>
-            <div className='flex justify-between items-center'>
-              <span>ICU Department</span>
-              <button className='text-blue-600 hover:text-blue-800 text-sm'>
-                Edit
-              </button>
-            </div>
-            <div className='flex justify-between items-center'>
-              <span>Cardiology Department</span>
-              <button className='text-blue-600 hover:text-blue-800 text-sm'>
-                Edit
-              </button>
-            </div>
-            <div className='flex justify-between items-center'>
-              <span>Pediatrics Department</span>
-              <button className='text-blue-600 hover:text-blue-800 text-sm'>
-                Edit
-              </button>
-            </div>
-            <button className='w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200'>
+
+            <Separator />
+
+            <Button variant='outline' className='w-full'>
+              <Plus className='mr-2 h-4 w-4' />
               Add New Department
-            </button>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Data Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Data Management</CardTitle>
+          <CardDescription>
+            Import, export, or manage your application data
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <Button onClick={handleExportData} variant='outline'>
+              <Download className='mr-2 h-4 w-4' />
+              Export Data
+            </Button>
+
+            <Button onClick={handleImportData} variant='outline'>
+              <Upload className='mr-2 h-4 w-4' />
+              Import Data
+            </Button>
+
+            <Dialog
+              open={isDeleteDialogOpen}
+              onOpenChange={setIsDeleteDialogOpen}
+            >
+              <DialogTrigger asChild>
+                <Button variant='destructive'>
+                  <Trash2 className='mr-2 h-4 w-4' />
+                  Clear All Data
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    all your data including staff records, schedules, and
+                    settings.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button
+                    variant='outline'
+                    onClick={() => setIsDeleteDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button variant='destructive' onClick={handleClearData}>
+                    Yes, clear all data
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className='mt-6 bg-white p-6 rounded-lg border shadow-sm'>
-        <h3 className='text-lg font-semibold mb-4'>Data Management</h3>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-          <button className='bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700'>
-            Export Data
-          </button>
-          <button className='bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200'>
-            Import Data
-          </button>
-          <button className='bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700'>
-            Clear All Data
-          </button>
-        </div>
-      </div>
-
-      <div className='mt-6 flex justify-end'>
-        <button className='bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700'>
+      {/* Save Settings */}
+      <div className='flex justify-end'>
+        <Button onClick={handleSaveSettings} size='lg'>
+          <Save className='mr-2 h-4 w-4' />
           Save All Settings
-        </button>
+        </Button>
       </div>
     </div>
   );
