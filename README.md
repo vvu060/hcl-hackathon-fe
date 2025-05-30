@@ -10,7 +10,7 @@ This project was developed as part of the HCL Hackathon, showcasing modern web d
 
 ### Dashboard Overview
 
-![Dashboard Screenshot](./screenshots/dashboard.png)
+![Dashboard Screenshot](./public/screenshots/dashboard.png)
 _Main dashboard showing real-time staff overview and today's schedule_
 
 ### Staff Management
