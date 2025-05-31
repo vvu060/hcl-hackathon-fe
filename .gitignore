@@ -13,8 +13,7 @@ dist-ssr
 *.local
 
 # Screenshots (large files)
-public/screenshots/
-screenshots/
+
 
 # Editor directories and files
 .vscode/*

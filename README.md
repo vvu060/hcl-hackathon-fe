@@ -2,13 +2,42 @@
 
 A modern, responsive healthcare staff management application built for the **HCL Hackathon**. This system provides comprehensive tools for managing healthcare staff schedules, roles, and operations with a focus on user experience and mobile-first design.
 
+## 🌐 Live Demo
+
+**🚀 [View Live Application](https://hcl-hackathon-fe.vercel.app/)**
+
+The application is deployed and accessible at: https://hcl-hackathon-fe.vercel.app/
+
 ## 🏆 Hackathon Project
 
 This project was developed as part of the HCL Hackathon, showcasing modern web development practices and healthcare industry solutions.
 
 ## 📸 Screenshots
 
-Application screenshots are available in the `public/screenshots/` folder, showcasing the dashboard, staff management, schedule interface, mobile responsiveness, and authentication flow.
+### 🔐 Login Interface
+
+![Login Interface](./public/login.png)
+_Secure authentication with role-based access control_
+
+### 📊 Admin Dashboard
+
+![Admin Dashboard](./public/admin-dashboard.png)
+_Comprehensive overview with real-time staff status and analytics_
+
+### 👥 Staff Management
+
+![Staff Management](./public/staff-management.png)
+_Complete staff directory with detailed profiles and management tools_
+
+### 📅 Schedule Management
+
+![Schedule Management](./public/schedule-management.png)
+_Advanced scheduling interface with shift management capabilities_
+
+### 📱 Mobile Interface
+
+![Mobile Interface](./public/mobile-interfac.png)
+_Responsive design optimized for mobile devices_
 
 ## 🚀 Features
 
